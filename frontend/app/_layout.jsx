@@ -1,20 +1,17 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { Stack } from 'expo-router';
+import { RoleProvider } from './RoleContext';
 
-export default function App() {
+const RootLayout = () => {
   return (
-    <View style={styles.container}>
-      <Text>hey</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+    <RoleProvider>
+      <Stack >
+        <Stack.Screen name="index" options={{headerShown:false}}/>
+        <Stack.Screen name="(auth)" options={{headerShown:false}}/>
+        <Stack.Screen name="(tabs)" options={{headerShown:false}}/>
+      </Stack>
+    </RoleProvider>
+  )
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default RootLayout
+
