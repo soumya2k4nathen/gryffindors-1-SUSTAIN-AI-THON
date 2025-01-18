@@ -1,14 +1,25 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React from 'react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Card } from 'react-native-paper';
 
 const Analysis = () => {
+  const handleReport = () => {
+    console.log('Report generated');
+  };
+
   return (
-    <View>
-      <Text>Analysis</Text>
+    <View >
+      <Card >
+        <Card.Content>
+          <TouchableOpacity  onPress={handleReport}>
+            <Text >Your Report</Text>
+          </TouchableOpacity>
+        </Card.Content>
+      </Card>
     </View>
-  )
-}
+  );
+};
 
-export default Analysis
 
-const styles = StyleSheet.create({})
+
+export default Analysis;
