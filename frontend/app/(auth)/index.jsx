@@ -1,14 +1,16 @@
+//sign up
+
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
-const Splash = () => {
+const SignUp = () => {
   return (
-    <View>
-      <Text>Splash</Text>
+    <View options={{headerShown:false}}>
+      <Text>SignUp</Text>
     </View>
   )
 }
 
-export default Splash
+export default SignUp
 
 const styles = StyleSheet.create({})

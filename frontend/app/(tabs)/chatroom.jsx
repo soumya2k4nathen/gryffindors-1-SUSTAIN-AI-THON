@@ -1,14 +1,14 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
-const Splash = () => {
+const ChatRoom = () => {
   return (
     <View>
-      <Text>Splash</Text>
+      <Text>ChatRoom</Text>
     </View>
   )
 }
 
-export default Splash
+export default ChatRoom
 
 const styles = StyleSheet.create({})
