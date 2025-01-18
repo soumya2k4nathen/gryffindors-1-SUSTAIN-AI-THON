@@ -1,13 +1,14 @@
 {
   "expo": {
     "name": "sustainai",
-    "scheme":"sustainai",
+    "scheme": "sustainai",
     "slug": "sustainai",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
+    "entryPoint": "expo-router/entry",
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
@@ -23,10 +24,13 @@
       }
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
     },
     "plugins": [
-      "expo-router"
+      [
+        "expo-router",
+      ]
     ]
   }
 }
