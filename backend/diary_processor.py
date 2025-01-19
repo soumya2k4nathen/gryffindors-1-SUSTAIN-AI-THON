@@ -13,7 +13,7 @@ def query_huggingface_api(input_text):
     """
     payload = {"inputs": input_text}
     response = requests.post(API_URL, headers=headers, json=payload)
-    
+
     if response.status_code == 200:
         return response.json()[0]["generated_text"]
     else:
@@ -38,7 +38,25 @@ def urgency_categorization(sentence_group):
     return query_huggingface_api(input_text)
 
 def extract_key_activity(sentence_group):
-    input_text = f"What did the person do in little detail (without any i/my)? Text: {sentence_group}"
+    input_text = (
+        f"Analyze the text: \"{sentence_group}\"\n"
+        f"Generate a motivational notification suggesting an activity that boosted happiness. "
+        f"Do not repeat or rephrase the input directly. Output an action-oriented suggestion in simple language."
+    )
+    return query_huggingface_api(input_text)
+
+def time_of_day_classification(key_activity):
+    input_text = (
+        f"Analyze the following activity: \"{key_activity}\" and determine the most suitable time of day for this activity "
+        f"based on common habits and energy levels. Choose from 'morning,' 'evening,' 'night,' or 'anytime.' Provide only the time category as the output."
+    )
+    return query_huggingface_api(input_text)
+
+def validate_notification(key_activity):
+    input_text = (
+        f"Is the following activity a valid motivational notification that could make someone feel better any random day? "
+        f"Answer 'Yes' or 'No'. Activity: \"{key_activity}\""
+    )
     return query_huggingface_api(input_text)
 
 def group_linked_sentences(text):
@@ -64,16 +82,32 @@ def group_linked_sentences(text):
 
 def process_group(group):
     """
-    Process a single group of sentences to classify, categorize urgency, and extract key activities.
+    Process a single group of sentences to classify, categorize urgency, extract key activities, and classify time of day.
     """
     try:
         category = classify_sentence_group(group)
         urgency = urgency_categorization(group)
         key_activity = extract_key_activity(group)
-        return {"text": group, "category": category, "urgency": urgency, "key_activity": key_activity}
+        time_of_day = time_of_day_classification(key_activity)
+        valid_notification = validate_notification(key_activity)
+        return {
+            "text": group,
+            "category": category,
+            "urgency": urgency,
+            "key_activity": key_activity,
+            "time_of_day": time_of_day,
+            "valid_notification": valid_notification
+        }
     except Exception as e:
         print(f"Error processing group: {group}, Error: {e}")
-        return {"text": group, "category": None, "urgency": None, "key_activity": None}
+        return {
+            "text": group,
+            "category": None,
+            "urgency": None,
+            "key_activity": None,
+            "time_of_day": None,
+            "valid_notification": None
+        }
 
 def process_diary(diary_text, max_workers=5):
     """
