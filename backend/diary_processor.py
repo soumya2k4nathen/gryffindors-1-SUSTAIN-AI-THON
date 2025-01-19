@@ -30,9 +30,9 @@ def classify_sentence_group(sentence_group):
 def urgency_categorization(sentence_group):
     input_text = (
         f"Categorize the sentence as:\n"
-        f"a. No Emergency\n"
-        f"b. Need Help\n"
-        f"c. Need Immediate Help.\n"
+        f"a No Emergency\n"
+        f"b Need Help\n"
+        f"c Need Immediate Help.\n"
         f"Text: {sentence_group}"
     )
     return query_huggingface_api(input_text)

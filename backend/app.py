@@ -8,6 +8,7 @@ from model_utils import predict_toxicity
 from google.cloud import speech
 from diary_processor import process_diary
 import io
+import pandas as pd
 
 # Initialize Firebase Admin SDK (only once)
 def initialize_firebase():
@@ -201,16 +202,35 @@ def journal_entry():
             # Extract the transcript from the response
             content = " ".join([result.alternatives[0].transcript for result in response.results])
 
-        journal_data = {
-            "pseudo_name": pseudo_name,
+        # Get reference to the user's journal document
+        user_journal_ref = db.collection('journal_entries').document(pseudo_name)
+
+        # Fetch the existing journal data to append to 'entries' list
+        existing_data = user_journal_ref.get().to_dict()
+
+        # If no existing entries, initialize an empty list
+        if not existing_data or 'entries' not in existing_data:
+            existing_entries = []
+        else:
+            existing_entries = existing_data['entries']
+
+        # Create the new journal entry
+        new_entry = {
             "content": content,
             "type": entry_type,
             "date": date
         }
-        db.collection('journal_entries').add(journal_data)
+
+        # Append the new entry to the existing entries
+        existing_entries.append(new_entry)
+
+        # Save the updated entries list back to Firestore
+        user_journal_ref.set({'entries': existing_entries}, merge=True)
+
         return jsonify({"message": "Journal entry added successfully!"}), 201
     except Exception as e:
         return jsonify({"error": str(e)}), 400
+
 
 @app.route('/diary/analyze', methods=['POST'])
 def analyze_diary():
@@ -220,27 +240,93 @@ def analyze_diary():
             return jsonify({"error": "User not logged in"}), 401
 
         pseudo_name = session['pseudo_name']
-        data = request.get_json()
-        diary_text = data['content']  # Get the diary text from the request
+
+        # Fetch journal entries for the logged-in user
+        journal_entries_ref = db.collection('journal_entries').document(pseudo_name)
+        journal_data = journal_entries_ref.get().to_dict()
+
+        if not journal_data or 'entries' not in journal_data:
+            return jsonify({"error": "No journal entries found for the user"}), 404
+
+        # Combine all journal entries into a single text for analysis
+        diary_text = " ".join(entry['content'] for entry in journal_data['entries'])
 
         # Process the diary text using the process_diary model
         df = process_diary(diary_text)
 
-        # Store the DataFrame in Firestore
-        analysis_collection = db.collection('analysis').document(pseudo_name).collection('entries')
-        batch = db.batch()
+        # Update the analysis collection for the user
+        user_analysis_doc_ref = db.collection('analysis').document(pseudo_name)
 
+        # Get existing analysis data (if any)
+        existing_analysis = user_analysis_doc_ref.get().to_dict()
+        diary_entries = existing_analysis.get('diary_entries', []) if existing_analysis else []
+
+        # Add new analysis results
         for index, row in df.iterrows():
-            doc_ref = analysis_collection.document(str(index))  # Use index as document ID for traceability
-            batch.set(doc_ref, row.to_dict())  # Store the row as-is in Firestore
+            diary_entries.append(row.to_dict())
 
-        # Commit the batch to Firestore
-        batch.commit()
+        # Save updated analysis data back to Firestore
+        user_analysis_doc_ref.set({'diary_entries': diary_entries}, merge=True)
 
         return jsonify({"message": "Diary analysis completed and saved!"}), 201
+
     except Exception as e:
         return jsonify({"error": str(e)}), 400
+    
+@app.route('/diary/analysis/daily', methods=['POST'])
+def daily_analysis():
+    try:
+        # Ensure the user is logged in
+        if 'pseudo_name' not in session:
+            return jsonify({"error": "User not logged in"}), 401
 
+        pseudo_name = session['pseudo_name']
+
+        # Fetch the user's analysis data
+        user_analysis_ref = db.collection('analysis').document(pseudo_name)
+        analysis_data = user_analysis_ref.get().to_dict()
+
+        if not analysis_data or 'diary_entries' not in analysis_data:
+            return jsonify({"error": "No analysis data found for the user"}), 404
+
+        # Convert diary entries to a DataFrame
+        df = pd.DataFrame(analysis_data['diary_entries'])
+
+        # Get current date and day
+        current_date = datetime.now().strftime("%Y-%m-%d")
+        current_day = datetime.now().strftime("%A")
+
+        # Calculate the daily analysis metrics
+        new_df = pd.DataFrame({
+            "Date": [current_date],
+            "Day": [current_day],
+            "Academic": df[df['category'] == "academic positive"].shape[0] - df[df['category'] == "academic negative"].shape[0],
+            "Health": df[df['category'] == "health positive"].shape[0] - df[df['category'] == "health negative"].shape[0],
+            "Social": df[df['category'] == "social positive"].shape[0] - df[df['category'] == "social negative"].shape[0],
+            "Need help": df[df['urgency'] == "b"].shape[0],
+            "Immediate help needed": 1 if df[df['urgency'] == "c"].shape[0] > 0 else 0,
+        })
+
+        # You can print or log the new_df for debugging purposes
+        print(new_df)
+
+        # Save the daily analysis data to Firestore
+        user_daily_analysis_ref = db.collection('daily_analysis').document(pseudo_name)
+        existing_daily_data = user_daily_analysis_ref.get().to_dict()
+
+        # If data exists, append the new analysis, else initialize the list
+        if existing_daily_data:
+            existing_daily_data['entries'].append(new_df.to_dict(orient="records")[0])
+        else:
+            existing_daily_data = {'entries': [new_df.to_dict(orient="records")[0]]}
+
+        # Save the updated daily analysis data back to Firestore
+        user_daily_analysis_ref.set(existing_daily_data, merge=True)
+
+        return jsonify({"message": "Daily analysis data added successfully!"}), 201
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
 
 # Logout
 @app.route('/logout', methods=['POST'])
