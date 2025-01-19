@@ -1,8 +1,7 @@
 import requests
-import spacy
-
 import pandas as pd
-nlp = spacy.load("en_core_web_sm")
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
 API_TOKEN = "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"
 API_URL = "https://api-inference.huggingface.co/models/google/flan-t5-large"
 
@@ -16,15 +15,12 @@ def query_huggingface_api(input_text):
     response = requests.post(API_URL, headers=headers, json=payload)
     
     if response.status_code == 200:
-        return response.json()[0]["generated_text"] 
+        return response.json()[0]["generated_text"]
     else:
         print(f"Error: {response.status_code} - {response.text}")
         return None
 
 def classify_sentence_group(sentence_group):
-    """
-    Classifies a sentence group into specific categories using the Hugging Face API.
-    """
     input_text = (
         f"Classify the following text into categories: neutral, academic positive, health positive, "
         f"social positive, academic negative, health negative, or social negative. Text: {sentence_group}"
@@ -32,68 +28,65 @@ def classify_sentence_group(sentence_group):
     return query_huggingface_api(input_text)
 
 def urgency_categorization(sentence_group):
-    """
-    Categorizes the urgency level of a sentence group using the Hugging Face API.
-    """
     input_text = (
         f"Categorize the sentence as:\n"
         f"a. No Emergency\n"
-        f"b. Help needed (the person is sad / anxious)\n"
+        f"b. Need Help\n"
         f"c. Need Immediate Help.\n"
         f"Text: {sentence_group}"
     )
     return query_huggingface_api(input_text)
 
 def extract_key_activity(sentence_group):
-    """
-    Extracts the key activity from a sentence group using the Hugging Face API.
-    """
     input_text = f"What did the person do in little detail (without any i/my)? Text: {sentence_group}"
     return query_huggingface_api(input_text)
 
 def group_linked_sentences(text):
     linking_words = {"this", "that", "these", "those", "it", "such"}
-    doc = nlp(text)
+    sentences = text.split(". ")  # Simplified for this example
     grouped_sentences = []
     current_group = []
 
-    for sent in doc.sents:
-        sentence_text = sent.text.strip()
+    for sentence in sentences:
+        sentence_text = sentence.strip()
 
-        # If the sentence starts with a linking word, keep it with the previous group
         if any(sentence_text.lower().startswith(word) for word in linking_words):
             current_group.append(sentence_text)
         else:
-            # Start a new group if there's content in the current group
             if current_group:
                 grouped_sentences.append(" ".join(current_group))
-            # Create a new group with the current sentence
             current_group = [sentence_text]
 
-    # Add the last group if it exists
     if current_group:
         grouped_sentences.append(" ".join(current_group))
 
-    return grouped_sentences 
+    return grouped_sentences
 
-def process_diary(diary_text):
+def process_group(group):
     """
-    Processes the diary text by classifying, categorizing urgency, and extracting key activities.
+    Process a single group of sentences to classify, categorize urgency, and extract key activities.
+    """
+    try:
+        category = classify_sentence_group(group)
+        urgency = urgency_categorization(group)
+        key_activity = extract_key_activity(group)
+        return {"text": group, "category": category, "urgency": urgency, "key_activity": key_activity}
+    except Exception as e:
+        print(f"Error processing group: {group}, Error: {e}")
+        return {"text": group, "category": None, "urgency": None, "key_activity": None}
+
+def process_diary(diary_text, max_workers=5):
+    """
+    Processes the diary text using parallel API calls.
     """
     grouped_sentences = group_linked_sentences(diary_text)
-    data = []
+    results = []
 
-    for group in grouped_sentences:
-        if group.strip():  # Skip empty strings
-            category = classify_sentence_group(group)
-            urgency = urgency_categorization(group)
-            key_activity = extract_key_activity(group)
-            data.append({
-                "text": group,
-                "category": category,
-                "urgency": urgency,
-                "key_activity": key_activity
-            })
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        future_to_group = {executor.submit(process_group, group): group for group in grouped_sentences}
 
-    return pd.DataFrame(data)
+        for future in as_completed(future_to_group):
+            result = future.result()
+            results.append(result)
 
+    return pd.DataFrame(results)
