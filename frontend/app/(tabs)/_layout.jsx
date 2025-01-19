@@ -3,10 +3,11 @@ import { View } from 'react-native';
 import { Tabs } from 'expo-router';
 import { MaterialCommunityIcons } from 'react-native-vector-icons';
 import { Appbar } from 'react-native-paper';  
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const TabLayout = () => {
   return (
-    <View style={{ flex: 1 }}>
+    <GestureHandlerRootView style={{ flex: 1 }}>
        <Appbar.Header style={{ backgroundColor: "#4F033D" }}>
         <Appbar.Content title="Title" titleStyle={{ color: "#F4F4F4" }} />
         <Appbar.Action
@@ -103,7 +104,7 @@ const TabLayout = () => {
         />
       </Tabs>
 
-    </View>
+    </GestureHandlerRootView>
   );
 };
 
