@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native'; 
 import { IconButton } from 'react-native-paper';
 import JournalEntryCard from '../components/JournalEntryCard';
+import {router} from 'expo-router';
 
 const Home = () => {
   const [entries, setEntries] = useState([
@@ -17,7 +18,7 @@ const Home = () => {
 
   const handleAddNote = () => {
     console.log('Add note clicked');
-    // Handle add note functionality here
+    router.push('/journal')
   };
 
   const handleVoiceRecord = () => {
