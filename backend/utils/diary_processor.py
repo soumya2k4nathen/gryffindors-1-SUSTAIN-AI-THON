@@ -15,9 +15,9 @@ def classify_sentence_group(sentence_group):
 
 def urgency_categorization(sentence_group):
     input_text = f"3. Categorize the sentence as:\n" \
-                 f"   a. No Emergency\n" \
-                 f"   b. Need Help\n" \
-                 f"   c. Need Immediate Help.\n" \
+                 f"   a No Emergency\n" \
+                 f"   b Need Help\n" \
+                 f"   c Need Immediate Help.\n" \
                  f"Text: {sentence_group}"
     inputs = tokenizer(input_text, return_tensors="pt", padding=True, truncation=True)
     outputs = model.generate(inputs["input_ids"], max_length=50)
