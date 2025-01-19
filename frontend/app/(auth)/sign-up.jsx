@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text } from 'react-native';
-import { TextInput, Button } from 'react-native-paper'; 
+import { View, Text,TouchableOpacity } from 'react-native';
 import { useRole } from '../RoleContext'; 
 import {Link} from 'expo-router';
+import CustomTextInput from '../components/CustomTextInput';
+import CustomButton from '../components/CustomButton';
 
 const SignUp = () => {
   const { role } = useRole(); 
@@ -34,75 +35,88 @@ const SignUp = () => {
   };
 
   return (
-    <View className="flex-1 justify-center items-center p-4">
-      <Text className="text-2xl mb-4">Sign Up as {role}</Text>
+    <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: 16,
+          }}
+        >
+          {/* Center the content and prevent stretching */}
+          <View
+            style={{
+              padding: 16,
+              width: '100%', // Keep a fixed width for the content
+              maxWidth: 400, // Optional: constrain max width for larger screens
+            }}
+          >
 
-      <TextInput
-        label="Name"
-        value={name}
-        onChangeText={setName}
-        className="w-full mb-4"
-      />
-      <TextInput
-        label="Email"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-        className="w-full mb-4"
-      />
-      <TextInput
+            <CustomTextInput
+              label="Name"
+              value={name}
+              onChangeText={setName}
+            />
+             <CustomTextInput
+              label="Email"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+            />
+      <CustomTextInput
         label="Grade"
         value={grade}
         onChangeText={setGrade}
-        className="w-full mb-4"
       />
       
       {role === 'student' && (
-        <TextInput
+        <CustomTextInput
           label="Pseudo Name"
           value={pseudoName}
           onChangeText={setPseudoName}
-          className="w-full mb-4"
         />
       )}
 
       {role === 'student' && (
-        <TextInput
+        <CustomTextInput
           label="Phone"
           value={phone}
           onChangeText={setPhone}
           keyboardType="phone-pad"
-          className="w-full mb-4"
         />
       )}
 
-      <TextInput
+      <CustomTextInput
         label="Password"
         value={password}
         onChangeText={setPassword}
         secureTextEntry
-        className="w-full mb-4"
       />
-      <TextInput
+      <CustomTextInput
         label="Confirm Password"
         value={confirmPassword}
         onChangeText={setConfirmPassword}
         secureTextEntry
-        className="w-full mb-4"
       />
 
       {error ? (
         <Text className="text-red-500 mb-4">{error}</Text>
       ) : null}
 
-      <Button
-        mode="contained"
-        onPress={handleSubmit}
-        className="w-full py-3"
-      >
-        Sign Up
-      </Button>
-      <Link href="/sign-in">Sign In</Link>
+     <CustomButton onPress={handleSubmit} label="Sign In" style={{marginTop:45}} />
+
+        <Link
+          href="/sign-in"
+          style={{
+            marginTop: 15.5,
+            textAlign: 'center',
+            color: '#AB185A',
+            fontSize: 17
+          }}
+        >
+          Sign In
+        </Link>
+    </View>
     </View>
   );
 };
