@@ -7,12 +7,13 @@ import { Appbar } from 'react-native-paper';
 const TabLayout = () => {
   return (
     <View style={{ flex: 1 }}>
-      <Appbar.Header style={{ backgroundColor: '#FAE5D8' }}>
-        <Appbar.Content title="Title" />
+       <Appbar.Header style={{ backgroundColor: "#4F033D" }}>
+        <Appbar.Content title="Title" titleStyle={{ color: "#F4F4F4" }} />
         <Appbar.Action
           icon="account-circle"
+          color="#F4F4F4" 
+          size={30}
           onPress={() => {
-            // Handle profile icon press 
             console.log('Profile clicked');
           }}
         />
@@ -21,20 +22,24 @@ const TabLayout = () => {
       {/* Tabs */}
       <Tabs
         screenOptions={{
-          headerShown: false, 
-          tabBarActiveTintColor: "#522959", 
-          tabBarInactiveTintColor: "#B24D69", 
-          tabBarStyle: { backgroundColor: "#FAE5D8" },
-        }} 
+          headerShown: false,
+          tabBarActiveTintColor: "#FBE4D8",
+          tabBarInactiveTintColor: "#F4F4F4",
+          tabBarStyle: { 
+            backgroundColor: "#4F033D",
+            height: 50,
+           },
+          tabBarShowLabel: false,
+        }}
       >
         <Tabs.Screen
-          name="excercise"
+          name="exercise"
           options={{
             title: 'Exercise',
             tabBarIcon: ({ color, focused }) => (
               <MaterialCommunityIcons
-                name="meditation" 
-                size={24}
+                name="meditation"
+                size={30} // Increased size
                 color={color}
               />
             ),
@@ -47,8 +52,8 @@ const TabLayout = () => {
             title: 'EdContent',
             tabBarIcon: ({ color, focused }) => (
               <MaterialCommunityIcons
-                name="book-open-page-variant" 
-                size={24}
+                name="book-open-page-variant"
+                size={30} // Increased size
                 color={color}
               />
             ),
@@ -62,7 +67,7 @@ const TabLayout = () => {
             tabBarIcon: ({ color, focused }) => (
               <MaterialCommunityIcons
                 name="home"
-                size={24}
+                size={30} // Increased size
                 color={color}
               />
             ),
@@ -76,7 +81,7 @@ const TabLayout = () => {
             tabBarIcon: ({ color, focused }) => (
               <MaterialCommunityIcons
                 name="chat"
-                size={24}
+                size={30} // Increased size
                 color={color}
               />
             ),
@@ -89,14 +94,15 @@ const TabLayout = () => {
             title: 'Analysis',
             tabBarIcon: ({ color, focused }) => (
               <MaterialCommunityIcons
-                name="chart-line" 
-                size={24}
+                name="chart-line"
+                size={30} // Increased size
                 color={color}
               />
             ),
           }}
         />
       </Tabs>
+
     </View>
   );
 };

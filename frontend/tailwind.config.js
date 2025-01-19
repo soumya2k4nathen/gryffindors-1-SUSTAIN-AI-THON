@@ -11,7 +11,7 @@ module.exports = {
       colors: {
         primary: "#180018", //for text 
         secondary: {
-          DEFAULT: "#522959", //NAV COMP
+          DEFAULT: "#BF6382", //BABY PINK
           100:"#B24D69", //NAV
           200:"#DFB6B2" //bg copm
         },
