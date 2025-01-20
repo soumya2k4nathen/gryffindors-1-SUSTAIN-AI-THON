@@ -11,6 +11,7 @@ import io
 import pandas as pd
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from flask_cors import CORS
+import calendar
 
 # Initialize Firebase Admin SDK (only once)
 app = Flask(__name__)
@@ -99,7 +100,7 @@ def student_login():
         if user_doc.exists:
             user_data = user_doc.to_dict()
             if user_data['password'] == password:
-                session['pseudo_name'] = pseudo_name  # Store pseudo_name in session
+               # session['pseudo_name'] = pseudo_name  # Store pseudo_name in session
                 return jsonify({"message": "Student login successful!"}), 200
             else:
                 return jsonify({"error": "Invalid password"}), 401
@@ -135,11 +136,9 @@ def teacher_login():
 @app.route('/chat/post', methods=['POST'])
 def post_reply():
     try:
-        # Ensure the user is logged in
-        if 'pseudo_name' not in session:
-            return jsonify({"error": "User not logged in"}), 401
-
-        pseudo_name = session['pseudo_name']
+        # Hardcoding the pseudo_name as "sou" as per the requirement
+        pseudo_name = "sou"
+        
         data = request.get_json()
         content = data['content']
         date = datetime.now().isoformat()
@@ -154,10 +153,13 @@ def post_reply():
             "content": content,
             "date": date
         }
+        
+        # Save the reply to Firestore
         db.collection('chat_replies').add(reply_data)
         return jsonify({"message": "Posted successfully!"}), 201
     except Exception as e:
         return jsonify({"error": str(e)}), 400
+
 
 # Journal Entry
 from datetime import datetime
@@ -200,10 +202,13 @@ def journal_entry():
         return jsonify({"message": "Journal entry saved successfully!"}), 201
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+<<<<<<< HEAD
 
 if __name__ == '__main__':
     app.run(debug=True)
 
+=======
+>>>>>>> feaa9fd9325891df4cf38d781a94702874d99b2c
 
 @app.route('/diary/analyze', methods=['POST'])
 def analyze_diary():

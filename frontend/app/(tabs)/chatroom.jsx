@@ -1,10 +1,8 @@
-// Chatroom.js
 import React, { useState } from 'react';
 import { FlatList, KeyboardAvoidingView, Platform, Text, View } from 'react-native';
-import { Button, TextInput } from 'react-native-paper';
+import { Button, TextInput, IconButton } from 'react-native-paper';
 import { useWindowDimensions } from 'react-native';
-import Message from '../components/Message'; 
-import { IconButton } from 'react-native-paper';
+import Message from '../components/Message';
 
 const Chatroom = () => {
   const { width } = useWindowDimensions(); // Get screen width
@@ -15,13 +13,37 @@ const Chatroom = () => {
   ]);
 
   // Function to send a message
-  const sendMessage = () => {
+  const sendMessage = async () => {
     if (message.trim()) {
-      setMessages([
-        ...messages,
-        { id: String(messages.length + 1), user: 'You', text: message },
-      ]);
-      setMessage(''); 
+      const newMessage = {
+        pseudoname: 'sou', // Replace this with dynamic pseudoname if needed
+        content: message,
+        date: new Date().toISOString(), // Use ISO format for the date
+      };
+
+      try {
+        // Send the message to your backend
+        const response = await fetch('http://192.168.178.158:5000/chat/post', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(newMessage),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to send message');
+        }
+
+        // Update the local message list
+        setMessages([
+          ...messages,
+          { id: String(messages.length + 1), user: 'You', text: message },
+        ]);
+        setMessage(''); // Clear the input field
+      } catch (error) {
+        console.error('Error sending message:', error.message);
+      }
     }
   };
 
@@ -33,9 +55,10 @@ const Chatroom = () => {
         renderItem={({ item }) => (
           <Message user={item.user} text={item.text} />
         )}
-        contentContainerStyle={{ paddingBottom: 20 ,
-          padding:10
-        }} 
+        contentContainerStyle={{
+          paddingBottom: 20,
+          padding: 10,
+        }}
       />
 
       {/* Input and Send Button */}
@@ -57,11 +80,11 @@ const Chatroom = () => {
           }}
         />
         <IconButton
-          icon="send" 
+          icon="send"
           onPress={sendMessage}
           iconColor="#F4F4F4"
           style={{
-            backgroundColor: "#4F033D",
+            backgroundColor: '#4F033D',
             borderRadius: 25,
             padding: 8,
           }}
