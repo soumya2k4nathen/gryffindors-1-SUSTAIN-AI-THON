@@ -1,18 +1,40 @@
-# Project Title
-A brief description of what your project does.
+## Intro
+In today’s fast-paced academic environment, students often struggle with their mental health in silence. Many face emotional challenges that go unnoticed, leading to long-term consequences such as:  
+- Delayed Recognition of Mental Health Issues  
+- Lack of Personalized Mental Health Support  
+- Difficulty in Recommending Effective Coping Strategies  
+- Lack of Immediate Response to Crises  
+- Mental Health Stigma in Students  
+- Privacy Concerns  
 
-## Features
-- Feature 1
-- Feature 2
+## Workflow
+![Workflow](path/to/your/image.png)
 
-## Installation
-Steps to install and run your project.
+## Concept Map
+![Concept Map](path/to/your/image.png)
 
-## Usage
-How to use the project.
+## Tech Stack
+- **Frontend**: React Native  
+- **Backend**: Flask  
+- **Database**: Firestore  
+- **ML Models**: Flan_t5_large, Roberta toxicity classification, Random Forest  
+- **Tools**: Expo Go  
 
-## Contributing
-Guidelines for contributing to the project.
+## Novelty
+- The app analyzes journal entries to detect patterns and provide **customized real-time well-being reminders in the future**.  
+- A peer support **chatroom with AI proctoring** ensures safe, positive conversations free from toxic advice.  
 
-## License
-Specify the license (e.g., MIT, Apache 2.0).
+## Solution
+*(Add details about your solution here)*  
+
+## Aligning with Sustainable Development Goals
+### Goal 3: Good Health and Well-being
+- Predicts & improves mental health by analyzing student journals.  
+- Personalized interventions and real-time crisis support for emotional well-being.  
+
+### Goal 4: Quality Education
+- Supports academic performance by ensuring emotional stability.  
+- Helps students stay focused and engaged in learning.  
+
+
+
