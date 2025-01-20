@@ -14,7 +14,7 @@ from flask_cors import CORS
 
 # Initialize Firebase Admin SDK (only once)
 app = Flask(__name__)
-CORS(app)
+
 
 def initialize_firebase():
     try:
@@ -42,6 +42,14 @@ def create_user_in_firestore(user_data, role):
 def student_signup():
     try:
         data = request.get_json()
+
+        # Validate data and handle missing fields
+        required_fields = ['name', 'grade', 'email', 'password', 'phone', 'pseudo_name']
+        for field in required_fields:
+            if field not in data:
+                return jsonify({"error": f"Missing field: {field}"}), 400
+
+        # Organize data
         student_data = {
             'name': data['name'],
             'grade': data['grade'],
@@ -50,10 +58,16 @@ def student_signup():
             'phone': data['phone'],
             'pseudo_name': data['pseudo_name'],
         }
+
+        print(student_data['name'])  # Debugging with the correct field
+
+        # Perform database creation or other logic
         create_user_in_firestore(student_data, 'student')
+
         return jsonify({"message": "Student created successfully!"}), 201
+
     except Exception as e:
-        return jsonify({"error": str(e)}), 400
+        return jsonify({"error": str(e)}), 500
 
 # Teacher Signup
 @app.route('/signup/teacher', methods=['POST'])
@@ -324,4 +338,4 @@ def logout():
     return jsonify({"message": "Logged out successfully!"}), 200
 
 if __name__ == "__main__":
-    app.run(debug=True)
+     app.run(debug=True, host='0.0.0.0', port=5000)
