@@ -5,7 +5,10 @@ In today’s fast-paced academic environment, students often struggle with their
 - Difficulty in Recommending Effective Coping Strategies  
 - Lack of Immediate Response to Crises  
 - Mental Health Stigma in Students  
-- Privacy Concerns  
+- Privacy Concerns
+
+## Solution
+*(Add details about your solution here)* 
 
 ## Workflow
 ![Workflow](path/to/your/image.png)
@@ -22,10 +25,8 @@ In today’s fast-paced academic environment, students often struggle with their
 
 ## Novelty
 - The app analyzes journal entries to detect patterns and provide **customized real-time well-being reminders in the future**.  
-- A peer support **chatroom with AI proctoring** ensures safe, positive conversations free from toxic advice.  
-
-## Solution
-*(Add details about your solution here)*  
+- A peer support **chatroom with AI proctoring** ensures safe, positive conversations free from toxic advice.
+- Weekly analysis in different domains such as social, health and academic.
 
 ## Aligning with Sustainable Development Goals
 ### Goal 3: Good Health and Well-being
