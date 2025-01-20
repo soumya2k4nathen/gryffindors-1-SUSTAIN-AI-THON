@@ -9,7 +9,7 @@ const TabLayout = () => {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
        <Appbar.Header style={{ backgroundColor: "#4F033D" }}>
-        <Appbar.Content title="Title" titleStyle={{ color: "#F4F4F4" }} />
+        <Appbar.Content title="Thozha" titleStyle={{ color: "#F4F4F4" }} />
         <Appbar.Action
           icon="account-circle"
           color="#F4F4F4" 
