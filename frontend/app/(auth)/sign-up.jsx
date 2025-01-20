@@ -4,6 +4,7 @@ import { useRole } from '../RoleContext';
 import {Link} from 'expo-router';
 import CustomTextInput from '../components/CustomTextInput';
 import CustomButton from '../components/CustomButton';
+import axios from 'axios'; 
 
 const SignUp = () => {
   const { role } = useRole(); 
@@ -16,7 +17,7 @@ const SignUp = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
 
-  const handleSubmit = () => {
+  const handleSubmit = async() => {
     // Validate if passwords match
     if (password !== confirmPassword) {
       setError('Passwords do not match');
@@ -28,7 +29,31 @@ const SignUp = () => {
       setError('Please fill in all the fields');
       return;
     }
+<<<<<<< HEAD
     
+=======
+     
+
+    if(role==="student"){
+      try{
+        const response = await axios.post('http://172.16.41.23:5000/signup/student',{
+          name: name,
+          grade: grade,
+          email: email,
+          password: password,
+          phone: phone,
+          pseudo_name: pseudoName
+        });
+        if(response.data.success){
+          console.log("user signed up")
+        }else{
+          console.log("signup failed: ", response.data.message);
+        }
+      }catch(error){
+        console.error("Error during signup", error);
+      }
+    };
+>>>>>>> 1573782af2e7138a8b6b4244ec21133c0c12897c
     // Handle the sign-up logic here
     //console.log('Signed up as', role, name, email, grade, phone, password, pseudoName);
     // Proceed with further actions like navigation or API call
