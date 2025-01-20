@@ -10,8 +10,12 @@ from diary_processor import process_diary
 import io
 import pandas as pd
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from flask_cors import CORS
 
 # Initialize Firebase Admin SDK (only once)
+app = Flask(__name__)
+CORS(app)
+
 def initialize_firebase():
     try:
         firebase_admin.get_app()

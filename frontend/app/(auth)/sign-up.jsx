@@ -29,14 +29,11 @@ const SignUp = () => {
       setError('Please fill in all the fields');
       return;
     }
-<<<<<<< HEAD
-    
-=======
      
 
     if(role==="student"){
       try{
-        const response = await axios.post('http://172.16.41.23:5000/signup/student',{
+        const response = await axios.post('http://172.16.41.28:5000/signup/student',{
           name: name,
           grade: grade,
           email: email,
@@ -53,9 +50,8 @@ const SignUp = () => {
         console.error("Error during signup", error);
       }
     };
->>>>>>> 1573782af2e7138a8b6b4244ec21133c0c12897c
     // Handle the sign-up logic here
-    //console.log('Signed up as', role, name, email, grade, phone, password, pseudoName);
+    console.log('Signed up as', role, name, email, grade, phone, password, pseudoName);
     // Proceed with further actions like navigation or API call
   };
 
