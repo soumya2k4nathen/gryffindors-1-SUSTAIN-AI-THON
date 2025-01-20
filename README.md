@@ -18,7 +18,7 @@ Key features include:
 The app ensures user anonymity while delivering actionable insights and tailored support.
 
 ## Workflow
-![Workflow](path/to/your/image.png)
+![Workflow](./Design/workflow.png)
 
 ## Concept Map
 ![Concept Map](path/to/your/image.png)
