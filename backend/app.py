@@ -160,68 +160,49 @@ def post_reply():
         return jsonify({"error": str(e)}), 400
 
 # Journal Entry
+from datetime import datetime
+import calendar  # To get the day of the week
+
 @app.route('/journal', methods=['POST'])
 def journal_entry():
     try:
-        # Ensure the user is logged in
-        if 'pseudo_name' not in session:
-            return jsonify({"error": "User not logged in"}), 401
+        # Authenticate user (assumes 'pseudo_name' is passed in request header or session)
+        pseudo_name = request.headers.get('pseudo_name') or session.get('pseudo_name')
+        if not pseudo_name:
+            return jsonify({"error": "User not authenticated"}), 401
 
-        pseudo_name = session['pseudo_name']
+        # Get the journal data from request
         data = request.get_json()
         entry_type = data.get('type', 'text')
+        content = data.get('content', '')  # Default to empty content
         date = datetime.now().isoformat()
+        day_of_week = calendar.day_name[datetime.now().weekday()]
 
-        if entry_type == 'text':
-            content = data['content']
-        elif entry_type == 'voice':
-            # Simulate voice-to-text conversion (use Google Cloud Speech-to-Text for actual implementation)
-            audio_path = data['audio_path']  # Path to the uploaded audio file
-
-            # Assuming you have set up Google Cloud Speech-to-Text properly
-            client = speech.SpeechClient()
-            with open(audio_path, 'rb') as audio_file:
-                content = audio_file.read()
-            
-            audio = speech.RecognitionAudio(content=content)
-            config = speech.RecognitionConfig(
-                encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
-                sample_rate_hertz=16000,
-                language_code="en-US",
-            )
-            response = client.recognize(config=config, audio=audio)
-
-            # Extract the transcript from the response
-            content = " ".join([result.alternatives[0].transcript for result in response.results])
-
-        # Get reference to the user's journal document
-        user_journal_ref = db.collection('journal_entries').document(pseudo_name)
-
-        # Fetch the existing journal data to append to 'entries' list
-        existing_data = user_journal_ref.get().to_dict()
-
-        # If no existing entries, initialize an empty list
-        if not existing_data or 'entries' not in existing_data:
-            existing_entries = []
-        else:
-            existing_entries = existing_data['entries']
-
-        # Create the new journal entry
+        # Create journal entry object
         new_entry = {
             "content": content,
             "type": entry_type,
-            "date": date
+            "date": date,
+            "day": day_of_week,
         }
 
-        # Append the new entry to the existing entries
+        # Firestore: Reference to user's journal entries
+        user_journal_ref = db.collection('journal_entries').document(pseudo_name)
+        existing_data = user_journal_ref.get().to_dict() or {}
+        existing_entries = existing_data.get('entries', [])
+
+        # Append the new journal entry
         existing_entries.append(new_entry)
 
-        # Save the updated entries list back to Firestore
+        # Save updated entries to Firestore
         user_journal_ref.set({'entries': existing_entries}, merge=True)
 
-        return jsonify({"message": "Journal entry added successfully!"}), 201
+        return jsonify({"message": "Journal entry saved successfully!"}), 201
     except Exception as e:
-        return jsonify({"error": str(e)}), 400
+        return jsonify({"error": str(e)}), 500
+
+if __name__ == '__main__':
+    app.run(debug=True)
 
 
 @app.route('/diary/analyze', methods=['POST'])

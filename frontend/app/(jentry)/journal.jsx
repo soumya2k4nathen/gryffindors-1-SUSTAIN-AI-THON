@@ -8,17 +8,28 @@ const Journal = () => {
   
   const currentDate = new Date().toLocaleDateString();
 
-  const handleSaveEntry = () => {
+  const handleSaveEntry = async () => {
     const journalEntry = {
-      date: currentDate,
-      title,
-      content,
+      type: "text",
+      content: content,
     };
-
-    console.log('Journal Entry:', journalEntry);
-    //backend
+  
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:5000/journal", // Update to your backend URL
+        journalEntry,
+        {
+          headers: {
+            pseudo_name: "example_user", // Replace with actual pseudo_name or user ID
+          },
+        }
+      );
+      console.log("Response from backend:", response.data);
+    } catch (error) {
+      console.error("Error saving journal entry:", error.response?.data || error.message);
+    }
   };
-
+  
   return (
     <View style={styles.container}>
       
