@@ -21,7 +21,7 @@ The app ensures user anonymity while delivering actionable insights and tailored
 ![Workflow](./Design/workflow.png)
 
 ## Concept Map
-![Concept Map](path/to/your/image.png)
+![Concept Map](./Design/conceptMap.jpeg)
 
 ## Tech Stack
 - **Frontend**: React Native  
