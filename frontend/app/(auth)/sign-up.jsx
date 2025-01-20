@@ -28,9 +28,9 @@ const SignUp = () => {
       setError('Please fill in all the fields');
       return;
     }
-
+    
     // Handle the sign-up logic here
-    console.log('Signed up as', role, name, email, grade, phone, password, pseudoName);
+    //console.log('Signed up as', role, name, email, grade, phone, password, pseudoName);
     // Proceed with further actions like navigation or API call
   };
 
@@ -103,7 +103,7 @@ const SignUp = () => {
         <Text className="text-red-500 mb-4">{error}</Text>
       ) : null}
 
-     <CustomButton onPress={handleSubmit} label="Sign In" style={{marginTop:45}} />
+     <CustomButton onPress={handleSubmit} label="Sign Up" style={{marginTop:45}} />
 
         <Link
           href="/sign-in"
