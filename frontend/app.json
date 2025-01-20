@@ -15,12 +15,18 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "flipper": {
+        "network": false
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
+      },
+      "flipper": {
+        "network": false
       }
     },
     "web": {
@@ -29,7 +35,7 @@
     },
     "plugins": [
       [
-        "expo-router",
+        "expo-router"
       ]
     ]
   }
