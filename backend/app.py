@@ -9,6 +9,7 @@ from google.cloud import speech
 from diary_processor import process_diary
 import io
 import pandas as pd
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # Initialize Firebase Admin SDK (only once)
 def initialize_firebase():
@@ -111,36 +112,9 @@ def teacher_login():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-# Post Problem
-@app.route('/chat/post', methods=['POST'])
-def post_problem():
-    try:
-        # Ensure the user is logged in
-        if 'pseudo_name' not in session:
-            return jsonify({"error": "User not logged in"}), 401
-
-        pseudo_name = session['pseudo_name']
-        data = request.get_json()
-        content = data['content']
-        date = datetime.now().isoformat()
-
-        # Check for toxicity
-        toxicity = predict_toxicity(content)
-        if toxicity == "Toxic":
-            return jsonify({"message": "Your message was flagged as toxic and cannot be posted."}), 400
-
-        post_data = {
-            "pseudo_name": pseudo_name,
-            "content": content,
-            "date": date
-        }
-        db.collection('chat_posts').add(post_data)
-        return jsonify({"message": "Problem posted successfully!"}), 201
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
 
 # Post Reply
-@app.route('/chat/reply', methods=['POST'])
+@app.route('/chat/post', methods=['POST'])
 def post_reply():
     try:
         # Ensure the user is logged in
@@ -163,7 +137,7 @@ def post_reply():
             "date": date
         }
         db.collection('chat_replies').add(reply_data)
-        return jsonify({"message": "Reply posted successfully!"}), 201
+        return jsonify({"message": "Posted successfully!"}), 201
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
@@ -254,19 +228,30 @@ def analyze_diary():
         # Process the diary text using the process_diary model
         df = process_diary(diary_text)
 
+        # Transform the results into a suitable format for Firestore
+        diary_analysis = []
+        for _, row in df.iterrows():
+            diary_analysis.append({
+                "text": row['text'],
+                "category": row['category'],
+                "urgency": row['urgency'],
+                "key_activity": row['key_activity'],
+                "time_of_day": row['time_of_day'],
+                "valid_notification": row['valid_notification']
+            })
+
         # Update the analysis collection for the user
         user_analysis_doc_ref = db.collection('analysis').document(pseudo_name)
 
-        # Get existing analysis data (if any)
+        # Fetch existing analysis data (if any)
         existing_analysis = user_analysis_doc_ref.get().to_dict()
-        diary_entries = existing_analysis.get('diary_entries', []) if existing_analysis else []
+        existing_entries = existing_analysis.get('diary_entries', []) if existing_analysis else []
 
-        # Add new analysis results
-        for index, row in df.iterrows():
-            diary_entries.append(row.to_dict())
+        # Append new analysis results to existing data
+        updated_entries = existing_entries + diary_analysis
 
-        # Save updated analysis data back to Firestore
-        user_analysis_doc_ref.set({'diary_entries': diary_entries}, merge=True)
+        # Save the updated analysis data back to Firestore
+        user_analysis_doc_ref.set({'diary_entries': updated_entries}, merge=True)
 
         return jsonify({"message": "Diary analysis completed and saved!"}), 201
 
