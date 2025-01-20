@@ -8,7 +8,14 @@ In today’s fast-paced academic environment, students often struggle with their
 - Privacy Concerns
 
 ## Solution
-*(Add details about your solution here)* 
+The app leverages journaling to enhance student mental health. AI models analyze journal entries to promote self-awareness by identifying patterns in likes, dislikes, stressors, and sources of happiness. It provides personalized well-being reminders based on predicted mental states.
+
+Key features include:
+- AI-Proctored Peer Support Chatroom: Safe, positive, and anonymous interactions.
+- Teacher Dashboard: Provides insights into overall student mental health and flags students needing immediate attention.
+- Gamification: Streaks and rewards to boost engagement.
+- Self-Help Resources: Guided breathing exercises and emotional regulation tools.
+The app ensures user anonymity while delivering actionable insights and tailored support.
 
 ## Workflow
 ![Workflow](path/to/your/image.png)
