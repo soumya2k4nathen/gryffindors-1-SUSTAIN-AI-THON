@@ -162,6 +162,9 @@ def post_reply():
 
 
 # Journal Entry
+from datetime import datetime
+import calendar  # To get the day of the week
+
 @app.route('/journal', methods=['POST'])
 def journal_entry():
     try:

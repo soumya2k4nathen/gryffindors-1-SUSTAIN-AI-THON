@@ -21,29 +21,12 @@ const Chatroom = () => {
         date: new Date().toISOString(), // Use ISO format for the date
       };
 
-      try {
-        // Send the message to your backend
-        const response = await fetch('http://192.168.178.158:5000/chat/post', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(newMessage),
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to send message');
-        }
-
         // Update the local message list
         setMessages([
           ...messages,
           { id: String(messages.length + 1), user: 'You', text: message },
         ]);
         setMessage(''); // Clear the input field
-      } catch (error) {
-        console.error('Error sending message:', error.message);
-      }
     }
   };
 

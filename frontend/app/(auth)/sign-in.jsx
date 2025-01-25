@@ -13,14 +13,9 @@ const SignIn = () => {
   const [password, setPassword] = useState('');
 
   const handleSubmit = () => {
-    //console.log('Signed in as', role, username, password);
+    console.log('Signed in as', role, username, password);
     
     // API request for student login
-    if (true) {
-      const studentLoginData = {
-        psuedo_name: username,
-        password: password
-      };
 
       //axios.post('', studentLoginData)
         //.then(response => {
@@ -31,9 +26,9 @@ const SignIn = () => {
         //.catch(error => {
           //console.error('Error during login:', error);
        // });
-       router.push('/home')
+       router.push('/home');
     }
-  };
+
 
   return (
     <View
@@ -83,6 +78,6 @@ const SignIn = () => {
       </View>
     </View>
   );
-};
 
+}
 export default SignIn;

@@ -11,26 +11,10 @@ const Journal = () => {
 
   const handleSaveEntry = async () => {
     const journalEntry = {
-      type: "text", // Optional, defaults to "text" if not provided
-      content: content, // Content entered by the user
-    };
 
-    // The pseudo_name can be fetched from authentication logic (e.g., session or authentication token)
-    const pseudoName = 'john_doe'; // Replace with the actual logged-in user's pseudo_name
-
-    try {
-      const response = await axios.post('http://192.168.178.158:5000/journal', journalEntry, {
-        headers: {
-          'Content-Type': 'application/json',
-          'pseudo_name': pseudoName, // Send the pseudo_name in the header
-        }
-      });
-      console.log('Response from backend:', response.data);
-    } catch (error) {
-      console.error('Error saving journal entry:', error);
     }
   };
-
+  
   return (
     <View style={styles.container}>
       <TextInput
