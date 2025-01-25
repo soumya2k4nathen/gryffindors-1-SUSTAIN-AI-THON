@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text } from 'react-native';
-import { useRole } from '../RoleContext'; 
+import { useRole } from '../../contexts/RoleContext'; 
 import { Link } from 'expo-router';
 import CustomTextInput from '../components/CustomTextInput';
 import CustomButton from '../components/CustomButton';

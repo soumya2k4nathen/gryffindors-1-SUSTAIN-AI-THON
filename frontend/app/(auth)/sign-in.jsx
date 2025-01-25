@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Button } from 'react-native-paper';
-import { useRole } from '../RoleContext';
+import { useRole } from '../../contexts/RoleContext';
 import { Link, router } from 'expo-router';
 import CustomTextInput from '../components/CustomTextInput'; // Import the new component
 import CustomButton from '../components/CustomButton';

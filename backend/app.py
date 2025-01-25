@@ -202,13 +202,8 @@ def journal_entry():
         return jsonify({"message": "Journal entry saved successfully!"}), 201
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-<<<<<<< HEAD
 
-if __name__ == '__main__':
-    app.run(debug=True)
 
-=======
->>>>>>> feaa9fd9325891df4cf38d781a94702874d99b2c
 
 @app.route('/diary/analyze', methods=['POST'])
 def analyze_diary():
